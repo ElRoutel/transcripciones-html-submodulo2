@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicación Web con Menús Pro</title>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header-nav {
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+
+    .top-menu {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      list-style: none;
+    }
+
+    .top-menu a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .top-menu a:hover { color: var(--primary); }
+
+    .profile-dropdown details {
+      position: relative;
+      background: transparent;
+      border: none;
+    }
+
+    .profile-dropdown summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #0f172a;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .profile-menu {
+      position: absolute;
+      right: 0;
+      top: 120%;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 180px;
+      padding: 0.5rem 0;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      list-style: none;
+    }
+
+    .profile-menu a {
+      display: block;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    .profile-menu a:hover { background: #0f172a; }
+
+    .app-layout {
+      display: flex;
+      flex: 1;
+    }
+
+    .sidebar {
+      width: 260px;
+      background-color: var(--card-bg);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .sidebar h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin: 1rem 0 0.5rem 0.5rem;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 0.8rem;
+      color: var(--text);
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+    }
+
+    .menu-item:hover, .menu-item.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .sidebar details {
+      border: none;
+      background: transparent;
+    }
+
+    .sidebar summary {
+      list-style: none;
+      padding: 0.6rem 0.8rem;
+      color: var(--text);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sidebar summary:hover { background: #0f172a; }
+
+    .submenu {
+      list-style: none;
+      padding-left: 1.5rem;
+      margin-top: 0.25rem;
+    }
+
+    .submenu a {
+      display: block;
+      padding: 0.4rem 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      border-radius: 4px;
+    }
+
+    .submenu a:hover { color: var(--text); background: #0f172a; }
+
+    .content {
+      flex: 1;
+      padding: 2rem;
+      max-width: 900px;
+    }
+
+    .tab-menu {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+      list-style: none;
+    }
+
+    .tab-menu a {
+      padding: 0.6rem 1.2rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-menu a.active, .tab-menu a:hover {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    dialog {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--primary);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: auto;
+    }
+    dialog::backdrop { background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); }
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header-nav">
+    <div class="brand">🚀 DevApp Pro</div>
+
+    <nav aria-label="Navegación de usuario">
+      <ul class="top-menu">
+        <li><a href="#notificaciones">🔔 Notificaciones</a></li>
+
+        <li class="profile-dropdown">
+          <details>
+            <summary>👤 Mi Cuenta ▾</summary>
+            <ul class="profile-menu">
+              <li><a href="#perfil">Configuración</a></li>
+              <li><a href="#billing">Facturación</a></li>
+              <li><hr style="border-color: var(--border); margin: 4px 0;"></li>
+              <li><a href="#logout" style="color: #ef4444;">Cerrar Sesión</a></li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="app-layout">
+
+    <aside class="sidebar">
+      <h3>Principal</h3>
+      <a href="#dashboard" class="menu-item active">📊 Panel Control</a>
+      <a href="#analytics" class="menu-item">📈 Analíticas</a>
+
+      <h3>Gestión</h3>
+      <details open>
+        <summary>📁 Proyectos ▾</summary>
+        <ul class="submenu">
+          <li><a href="#activos">En Curso</a></li>
+          <li><a href="#archivados">Archivados</a></li>
+          <li><a href="#nuevo">+ Crear Nuevo</a></li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>⚙️ Ajustes ▾</summary>
+        <ul class="submenu">
+          <li><a href="#seguridad">Seguridad</a></li>
+          <li><a href="#integraciones">Integraciones</a></li>
+        </ul>
+      </details>
+    </aside>
+
+    <main class="content">
+
+      <ul class="tab-menu">
+        <li><a href="#general" class="active">Vista General</a></li>
+        <li><a href="#equipo">Miembros del Equipo</a></li>
+        <li><a href="#metricas">Métricas</a></li>
+      </ul>
+
+      <section class="card">
+        <h2>Bienvenido al Sistema</h2>
+        <p style="color: var(--text-muted); margin-top: 0.5rem;">
+          Esta interfaz integra múltiples patrones de menú (Sidebar vertical con acordeones, desplegable superior de perfil y barra de pestañas) usando estructuración nativa HTML5 y CSS3.
+        </p>
+        <br>
+        <button onclick="document.getElementById('modal-demo').showModal()">
+          Abrir Ventana Dialog
+        </button>
+      </section>
+
+    </main>
+  </div>
+
+  <dialog id="modal-demo">
+    <h3>Acción Rápida</h3>
+    <p style="margin: 1rem 0;">Has ejecutado una acción desde el menú principal.</p>
+    <button onclick="document.getElementById('modal-demo').close()">Entendido</button>
+  </dialog>
+
+</body>
+</html>

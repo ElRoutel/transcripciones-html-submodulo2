@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Details, Dialog y Ruby</title>
+</head>
+<body>
+
+<details>
+  <summary>¿Ver términos y condiciones?</summary>
+  <p>El uso del servicio implica la aceptación implícita de los términos descritos aquí.</p>
+</details>
+
+<dialog open>
+  <p>Sesión a punto de expirar</p>
+  <button onclick="this.closest('dialog').close()">Cerrar</button>
+</dialog>
+
+<p>
+  Anotación tipográfica Oriental:
+  <ruby>
+    漢 <rp>(</rp><rt>かん</rt><rp>)</rp>
+    字 <rp>(</rp><rt>じ</rt><rp>)</rp>
+  </ruby>
+</p>
+
+</body>
+</html>

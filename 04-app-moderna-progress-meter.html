@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicación Web Moderna</title>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app-container {
+      max-width: 600px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    details {
+      background-color: #0f172a;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #334155;
+    }
+
+    summary {
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--primary);
+    }
+
+    input, select, button {
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: var(--text);
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 0.5rem;
+    }
+
+    button {
+      background: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    meter, progress {
+      width: 100%;
+      height: 12px;
+      margin-top: 0.5rem;
+    }
+
+    dialog {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--primary);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 400px;
+    }
+
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+    }
+
+    mark {
+      background-color: var(--primary);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="app-container">
+
+    <section class="card">
+      <h2>Explorar Componentes</h2>
+      <label for="buscar">Buscar tecnología:</label>
+      <input type="search" id="buscar" list="tecnologias" placeholder="Escribe 'HTML' o 'CSS'...">
+
+      <datalist id="tecnologias">
+        <option value="HTML5 Semántico">
+        <option value="CSS Grid & Flexbox">
+        <option value="JavaScript ES6+">
+        <option value="Web Components">
+      </datalist>
+    </section>
+
+    <section class="card">
+      <details>
+        <summary>Ver estado del servidor</summary>
+        <p>Servicios activos desde <time datetime="2026-09-14">14 de Septiembre</time>.</p>
+
+        <label>Uso de Memoria RAM:</label>
+        <meter min="0" max="100" low="33" high="66" optimum="20" value="78"></meter>
+
+        <label>Sincronización de Datos:</label>
+        <progress value="65" max="100">65%</progress>
+      </details>
+    </section>
+
+    <section class="card">
+      <fieldset>
+        <legend><mark>Configuración Rápida</mark></legend>
+
+        <form oninput="resultado.value=parseInt(a.value) * parseInt(b.value)">
+          <label for="a">Rendimiento deseado (1-10):</label>
+          <input type="range" id="a" value="5" min="1" max="10">
+
+          <label for="b">Multiplicador de Núcleos:</label>
+          <input type="number" id="b" value="4">
+
+          <p>Puntaje Estimado: <output name="resultado" for="a b">20</output> pts</p>
+        </form>
+
+        <button onclick="document.getElementById('mi-modal').showModal()">
+          Abrir Panel Emergente
+        </button>
+      </fieldset>
+    </section>
+
+  </main>
+
+  <dialog id="mi-modal">
+    <h3>Panel de Confirmación</h3>
+    <p>Has invocado un modal nativo mediante la etiqueta <code>&lt;dialog&gt;</code> sin frameworks.</p>
+    <button onclick="document.getElementById('mi-modal').close()">Cerrar Ventana</button>
+  </dialog>
+
+</body>
+</html>

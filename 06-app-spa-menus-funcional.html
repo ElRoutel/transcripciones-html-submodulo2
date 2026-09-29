@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicación Web Interactiva Functional</title>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header-nav {
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--primary);
+      cursor: pointer;
+    }
+
+    .top-menu {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      list-style: none;
+    }
+
+    .profile-dropdown { position: relative; }
+
+    .profile-btn {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .profile-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 120%;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 180px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      list-style: none;
+      overflow: hidden;
+    }
+
+    .profile-menu.show { display: block; }
+
+    .profile-menu button {
+      width: 100%;
+      text-align: left;
+      padding: 0.6rem 1rem;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .profile-menu button:hover { background: #0f172a; }
+
+    .app-layout { display: flex; flex: 1; }
+
+    .sidebar {
+      width: 250px;
+      background-color: var(--card-bg);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .sidebar h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin: 1rem 0 0.5rem 0.5rem;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 0.8rem;
+      color: var(--text);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      transition: all 0.2s;
+    }
+
+    .menu-item:hover, .menu-item.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    details summary {
+      padding: 0.6rem 0.8rem;
+      color: var(--text);
+      cursor: pointer;
+      list-style: none;
+      border-radius: 6px;
+    }
+    details summary:hover { background: #0f172a; }
+
+    .submenu {
+      padding-left: 1rem;
+      margin-top: 0.25rem;
+    }
+
+    .content {
+      flex: 1;
+      padding: 2rem;
+      max-width: 900px;
+    }
+
+    .tab-menu {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+
+    .card {
+      background-color: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    dialog {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--primary);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: auto;
+    }
+    dialog::backdrop { background: rgba(0,0,0,0.7); }
+
+    .btn-action {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header-nav">
+    <div class="brand" onclick="navigateSidebar('dashboard')">🚀 DevApp Pro</div>
+
+    <div class="top-menu">
+      <div class="profile-dropdown">
+        <button class="profile-btn" onclick="toggleProfileMenu()">👤 Mi Cuenta ▾</button>
+        <div class="profile-menu" id="profileMenu">
+          <button onclick="navigateSidebar('configuracion')">⚙️ Configuración</button>
+          <button onclick="alert('Cerrando sesión...')">🚪 Cerrar Sesión</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+
+    <aside class="sidebar">
+      <h3>Principal</h3>
+      <button class="menu-item active" onclick="navigateSidebar('dashboard')">📊 Panel Control</button>
+      <button class="menu-item" onclick="navigateSidebar('analytics')">📈 Analíticas</button>
+
+      <h3>Gestión</h3>
+      <details open>
+        <summary>📁 Proyectos ▾</summary>
+        <div class="submenu">
+          <button class="menu-item" onclick="navigateSidebar('proyectos')">En Curso</button>
+        </div>
+      </details>
+    </aside>
+
+    <main class="content">
+
+      <div id="tabsContainer" class="tab-menu">
+        <button class="tab-btn active" onclick="switchTab('tab-resumen')">Vista General</button>
+        <button class="tab-btn" onclick="switchTab('tab-equipo')">Miembros del Equipo</button>
+      </div>
+
+      <section id="view-dashboard" class="view-section active">
+
+        <div id="tab-resumen" class="tab-content">
+          <div class="card">
+            <h2>📊 Panel Principal</h2>
+            <p style="color: var(--text-muted); margin-top: 0.5rem;">
+              Estás viendo el resumen general. Los menús ahora cambian de vista en tiempo real sin recargar la página.
+            </p>
+            <button class="btn-action" onclick="document.getElementById('modal-demo').showModal()">
+              Abrir Modal
+            </button>
+          </div>
+        </div>
+
+        <div id="tab-equipo" class="tab-content" style="display: none;">
+          <div class="card">
+            <h2>👥 Miembros del Equipo</h2>
+            <ul style="margin-top: 1rem; padding-left: 1.2rem;">
+              <li>Ana Martínez - Arquitecta Frontend</li>
+              <li>Carlos Ruiz - Backend Developer</li>
+            </ul>
+          </div>
+        </div>
+
+      </section>
+
+      <section id="view-analytics" class="view-section">
+        <div class="card">
+          <h2>📈 Reporte de Analíticas</h2>
+          <p style="color: var(--text-muted); margin-top: 0.5rem;">
+            Sección cargada dinámicamente desde el menú lateral.
+          </p>
+        </div>
+      </section>
+
+      <section id="view-proyectos" class="view-section">
+        <div class="card">
+          <h2>📁 Proyectos Activos</h2>
+          <p style="color: var(--text-muted); margin-top: 0.5rem;">
+            Listado de proyectos recuperados mediante la navegación de submenú.
+          </p>
+        </div>
+      </section>
+
+      <section id="view-configuracion" class="view-section">
+        <div class="card">
+          <h2>⚙️ Ajustes del Sistema</h2>
+          <p style="color: var(--text-muted); margin-top: 0.5rem;">
+            Vista accedida desde el desplegable de cuenta en el encabezado.
+          </p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <dialog id="modal-demo">
+    <h3>Acción Confirmada</h3>
+    <p style="margin: 1rem 0;">El modal funciona sobre cualquier sección de la aplicación.</p>
+    <button class="btn-action" onclick="document.getElementById('modal-demo').close()">Cerrar</button>
+  </dialog>
+
+  <script>
+    function navigateSidebar(sectionId) {
+      document.querySelectorAll('.view-section').forEach(sec => {
+        sec.classList.remove('active');
+      });
+
+      document.querySelectorAll('.sidebar .menu-item').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      const targetSection = document.getElementById('view-' + sectionId);
+      if (targetSection) {
+        targetSection.classList.add('active');
+      }
+
+      event.currentTarget?.classList?.add('active');
+
+      const tabsContainer = document.getElementById('tabsContainer');
+      tabsContainer.style.display = (sectionId === 'dashboard') ? 'flex' : 'none';
+
+      document.getElementById('profileMenu').classList.remove('show');
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.style.display = 'none';
+      });
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      document.getElementById(tabId).style.display = 'block';
+      event.currentTarget.classList.add('active');
+    }
+
+    function toggleProfileMenu() {
+      const menu = document.getElementById('profileMenu');
+      menu.classList.toggle('show');
+    }
+
+    window.onclick = function(e) {
+      if (!e.target.matches('.profile-btn')) {
+        const menu = document.getElementById('profileMenu');
+        if (menu.classList.contains('show')) {
+          menu.classList.remove('show');
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
